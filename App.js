@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ImageBackground,Text, View,Dimensions,Animated,Image } from 'react-native';
+import {TouchableOpacity, StyleSheet, ImageBackground,Text, View,Dimensions,Animated,Image } from 'react-native';
 
 export default class App extends React.Component {
     constructor(props){
@@ -7,10 +7,9 @@ export default class App extends React.Component {
         this.state={
             movePlayerVal : new Animated.Value(90),
             playerSide : 'left',
-
+            score : 0 ,
 
         }
-        console.log(this.state.movePlayerVal)
 
     }
 
@@ -20,29 +19,41 @@ export default class App extends React.Component {
 
     return (
       <ImageBackground source={require('./app/img/back.png')} style={styles.container}>
+          <View style={{flex:1,marginTop:Dimensions.get('window').height-
+              (Dimensions.get('window').height-20)}}>
+              <View style={styles.points}>
+                  <Text style={{fontWeight:'bold',alignContent:'center',color:"#fff"}}>Score: </Text>
 
+                  <Text style={{color:'white',fontSize:30}}>{this.state.score}</Text>
+              </View>
+          </View>
           <Animated.Image source={require('./app/img/player.png')} style={[styles.player ,
               {transform:[
                   {translateX:this.state.movePlayerVal}
                   ]}]} />
 
           <View style={styles.controls}>
-             <Image onPress={()=> this.movePlayer('left')} source={require('./app/img/gauche.png')} style={styles.left}/>
-              <View style={{width:30}}/>
-             <Image onPress={()=> this.movePlayer('right')} source={require('./app/img/droite.png') }style={styles.right}/>
+              <TouchableOpacity onPress={()=> this.movePlayer('left')}>
+             <Image  source={require('./app/img/gauche.png')} style={styles.left}/>
+              </TouchableOpacity>
+
+                  <View style={{width:30}}/>
+          <TouchableOpacity onPress={()=> this.movePlayer('right')}>
+              <Image  source={require('./app/img/droite.png') }style={styles.right}/>
+          </TouchableOpacity>
           </View>
 
       </ImageBackground>
     );
   }
-  movePleyer(direction){
+  movePlayer(direction){
       // move player right
       if (direction =='right'){
         this.setState({playerSide:'right'})
         Animated.spring(
              this.state.movePlayerVal,
             {
-                toValue: Dimensions.get('window').width - 140 ,
+                toValue: Dimensions.get('window').width - 160 ,
                 tension : 120,
          }
         ).start()
@@ -73,9 +84,13 @@ const styles = StyleSheet.create({
       height: 50,
     },
     controls:{
+      paddingTop:20,
       flexDirection:'row',
       alignItems: 'center',
-      alignContent: "center"
+      alignContent: "center",
+      justifyContent:'center'
+
+
     },
     player: {
      width: 70,
@@ -92,4 +107,11 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     position:'relative',
   },
+   points:{
+    width:160,
+    height:80,
+    backgroundColor:"transparent",
+    flexDirection:'column',
+    paddingLeft:5,
+   }
 });
